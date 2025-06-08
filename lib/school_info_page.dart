@@ -111,19 +111,36 @@ class SchoolInfoPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        debugPrint('유학 상담하기 버튼 클릭됨');
-                        const url = 'https://forms.gle/YcMrvfmoRWSfG4Qh6';
-                        final uri = Uri.parse(url);
-                        if (await canLaunchUrl(uri)) {
-                          debugPrint('구글폼 URL 실행: $url');
-                          await launchUrl(uri, mode: LaunchMode.externalApplication);
-                        } else {
-                          debugPrint('구글폼 URL 실행 불가: $url');
-                        }
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Kişisel Verilerin Toplanması ve Kullanımı Onayı'),
+                            content: const Text(
+                              'Danışmanlık başvurusu için adınız, iletişim bilgileriniz gibi kişisel verileriniz toplanacaktır. Girdiğiniz bilgiler yalnızca danışmanlık amacıyla kullanılacak ve Google Form (harici hizmet) üzerinde saklanacaktır.\n\nDetaylı bilgi için lütfen Gizlilik Politikasını inceleyiniz.\n\nDevam etmek için onay veriniz.'
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text('Vazgeç'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              TextButton(
+                                child: const Text('Onayla ve Devam Et'),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  const url = 'https://forms.gle/YcMrvfmoRWSfG4Qh6';
+                                  final uri = Uri.parse(url);
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.chat_bubble_outline),
-                      label:
-                          const Text('유학 상담하기', style: TextStyle(fontSize: 18)),
+                      label: const Text('Yurtdışı Eğitim Danışmanlığı',
+                          style: TextStyle(fontSize: 18)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF43A047),
                         foregroundColor: Colors.white,

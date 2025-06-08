@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'school_info_page.dart';
 import 'word_card_page.dart';
+import 'school_info_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Korean Quiz for Turkish',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const MainNavigation(),
