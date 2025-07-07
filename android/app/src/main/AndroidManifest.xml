@@ -1,6 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ktogether">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="35" />
     <application
         android:label="ktogether"
         android:name="${applicationName}"

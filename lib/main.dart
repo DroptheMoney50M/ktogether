@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:upgrader/upgrader.dart'; // 업그레이더 패키지 import
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'word_card_page.dart';
 import 'school_info_page.dart';
+import 'FavoritedWordsPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,11 +41,32 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
+  List<Map<String, String>> favoritedWords = [];
 
-  static const List<Widget> _pages = <Widget>[
-    WordCardPage(),
-    SchoolInfoPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoritedWords();
+  }
+
+  void _loadFavoritedWords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedWords = prefs.getStringList('favoritedWords') ?? [];
+    setState(() {
+      favoritedWords = savedWords
+          .map((word) => Map<String, String>.from(
+              Map<String, dynamic>.from(Uri.splitQueryString(word))))
+          .toList();
+    });
+  }
+
+  void _saveFavoritedWords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedWords = favoritedWords
+        .map((word) => Uri(queryParameters: word).query)
+        .toList();
+    await prefs.setStringList('favoritedWords', savedWords);
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -53,13 +76,29 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      WordCardPage(onFavorite: (word) {
+        setState(() {
+          favoritedWords.add(word);
+          _saveFavoritedWords();
+        });
+      }),
+      FavoritedWordsPage(favoritedWords: favoritedWords),
+      SchoolInfoPage(),
+    ];
+
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
             label: 'Kelime', // 단어 학습
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite), 
+            label: 'Favori Kelimeler', // 즐겨찾기 단어
+
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
